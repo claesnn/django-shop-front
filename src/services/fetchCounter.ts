@@ -1,11 +1,11 @@
 import { queryOptions } from "@tanstack/react-query";
-import { Counter } from "../types";
 import { queryClient } from "./queryClient";
+import { GlobalCountersApi } from "../lib/api";
 
 async function counterFetch() {
-  const response = await fetch(`http://127.0.0.1:8000/api/global-counters/1/`);
-  const data: Counter = await response.json();
-  return data;
+  return await new GlobalCountersApi().globalCountersRetrieve({
+    id: 1,
+  });
 }
 
 export const counterOptions = queryOptions({
@@ -16,8 +16,8 @@ export const counterOptions = queryOptions({
 export const counterPostIntent = "increment-counter";
 
 export const counterPost = async () => {
-  await fetch("http://127.0.0.1:8000/api/global-counters/1/increment/", {
-    method: "POST",
+  await new GlobalCountersApi().globalCountersIncrementCreate({
+    id: 1,
   });
   queryClient.invalidateQueries(counterOptions);
   return null;

@@ -1,11 +1,9 @@
 import { queryOptions } from "@tanstack/react-query";
 import { queryClient } from "./queryClient";
-import { Category } from "../types";
+import { CategoriesApi } from "../lib/api";
 
 async function categoryFetch() {
-  const response = await fetch("http://127.0.0.1:8000/api/categories/");
-  const data: Category[] = await response.json();
-  return data;
+  return await new CategoriesApi().categoriesList();
 }
 
 export const categoryOptions = queryOptions({
@@ -19,12 +17,10 @@ export const categoryDeleteIntent = "delete-category";
 export const categoryPost = async (formData: FormData) => {
   const title = formData.get("title");
 
-  await fetch("http://127.0.0.1:8000/api/categories/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+  await new CategoriesApi().categoriesCreate({
+    category: {
+      title: title as string,
     },
-    body: JSON.stringify({ title }),
   });
   queryClient.invalidateQueries(categoryOptions);
   return null;
@@ -32,8 +28,9 @@ export const categoryPost = async (formData: FormData) => {
 
 export const categoryDelete = async (formData: FormData) => {
   const id = formData.get("id");
-  await fetch(`http://127.0.0.1:8000/api/categories/${id}/`, {
-    method: "DELETE",
+
+  await new CategoriesApi().categoriesDestroy({
+    id: +(id as string),
   });
   queryClient.invalidateQueries(categoryOptions);
   return null;

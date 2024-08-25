@@ -1,10 +1,10 @@
 import { queryOptions } from "@tanstack/react-query";
-import { Item } from "../types";
+import { ItemsApi } from "../lib/api";
 
 async function itemFetch(id: string) {
-  const response = await fetch(`http://127.0.0.1:8000/api/items/${id}/`);
-  const data: Item = await response.json();
-  return data;
+  return await new ItemsApi().itemsRetrieve({
+    id: +id,
+  });
 }
 
 export const itemSingleOptions = (id: string) => {

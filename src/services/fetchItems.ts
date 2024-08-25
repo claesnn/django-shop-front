@@ -1,11 +1,9 @@
 import { queryOptions } from "@tanstack/react-query";
 import { queryClient } from "./queryClient";
-import { Item } from "../types";
+import { ItemsApi } from "../lib/api";
 
 async function itemFetch() {
-  const response = await fetch("http://127.0.0.1:8000/api/items/");
-  const data: Item[] = await response.json();
-  return data;
+  return await new ItemsApi().itemsList();
 }
 
 export const itemOptions = queryOptions({
@@ -16,12 +14,11 @@ export const itemOptions = queryOptions({
 export const itemPost = async (request: Request) => {
   if (request.method === "POST") {
     const formData = await request.formData();
-    await fetch("http://127.0.0.1:8000/api/items/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    await new ItemsApi().itemsCreate({
+      item: {
+        title: formData.get("title") as string,
+        category: formData.get("category") as string,
       },
-      body: JSON.stringify(formData),
     });
     queryClient.invalidateQueries(itemOptions);
     return null;
