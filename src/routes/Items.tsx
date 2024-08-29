@@ -21,7 +21,7 @@ export default function Items() {
                 <p>Price: {item.price}$</p>
                 {item.category && (
                   <div className="w-fit bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
-                    {item.category.title}
+                    {item.category}
                   </div>
                 )}
               </div>

@@ -1,10 +1,15 @@
 import { queryOptions } from "@tanstack/react-query";
-import { ItemsApi } from "../lib/api";
+import { client } from "../lib/open-api/api-client";
 
 async function itemFetch(id: string) {
-  return await new ItemsApi().itemsRetrieve({
-    id: +id,
+  const { data } = await client.GET("/api/items/{id}/", {
+    params: { path: { id: +id } },
   });
+  if (data) {
+    return data;
+  } else {
+    return null;
+  }
 }
 
 export const itemSingleOptions = (id: string) => {

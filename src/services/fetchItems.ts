@@ -1,9 +1,14 @@
 import { queryOptions } from "@tanstack/react-query";
 import { queryClient } from "./queryClient";
-import { ItemsApi } from "../lib/api";
+import { client } from "../lib/open-api/api-client";
 
 async function itemFetch() {
-  return await new ItemsApi().itemsList();
+  const { data } = await client.GET("/api/items/", {});
+  if (data) {
+    return data;
+  } else {
+    return [];
+  }
 }
 
 export const itemOptions = queryOptions({
@@ -14,10 +19,14 @@ export const itemOptions = queryOptions({
 export const itemPost = async (request: Request) => {
   if (request.method === "POST") {
     const formData = await request.formData();
-    await new ItemsApi().itemsCreate({
-      item: {
+    await client.POST("/api/items/", {
+      body: {
+        id: 0,
         title: formData.get("title") as string,
-        category: formData.get("category") as string,
+        category: +(formData.get("category") as string),
+        price: formData.get("price") as string,
+        image: formData.get("image") as string,
+        created_at: "",
       },
     });
     queryClient.invalidateQueries(itemOptions);
@@ -25,8 +34,8 @@ export const itemPost = async (request: Request) => {
   } else if (request.method === "DELETE") {
     const formData = await request.formData();
     const id = formData.get("id");
-    await fetch(`http://127.0.0.1:8000/api/items/${id}/`, {
-      method: "DELETE",
+    await client.DELETE("/api/items/{id}/", {
+      params: { path: { id: +(id as string) } },
     });
     queryClient.invalidateQueries(itemOptions);
     return null;

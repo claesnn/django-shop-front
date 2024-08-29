@@ -33,7 +33,7 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Index />,
-        loader: () =>
+        loader: async () =>
           Promise.all([
             queryClient.fetchQuery(categoryOptions),
             queryClient.fetchQuery(counterOptions),

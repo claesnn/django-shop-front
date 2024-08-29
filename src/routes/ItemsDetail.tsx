@@ -17,7 +17,7 @@ export default function ItemsDetail() {
         </span>
         {data.category && (
           <span className="w-fit inline-block px-2 py-1 text-sm font-semibold text-gray-700 bg-gray-200 rounded-full">
-            {data.category.title}
+            {data.category}
           </span>
         )}
         <img

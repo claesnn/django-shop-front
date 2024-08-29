@@ -1,9 +1,14 @@
 import { queryOptions } from "@tanstack/react-query";
 import { queryClient } from "./queryClient";
-import { CategoriesApi } from "../lib/api";
+import { client } from "../lib/open-api/api-client";
 
 async function categoryFetch() {
-  return await new CategoriesApi().categoriesList();
+  const { data } = await client.GET("/api/categories/", {});
+  if (data) {
+    return data;
+  } else {
+    return [];
+  }
 }
 
 export const categoryOptions = queryOptions({
@@ -17,11 +22,13 @@ export const categoryDeleteIntent = "delete-category";
 export const categoryPost = async (formData: FormData) => {
   const title = formData.get("title");
 
-  await new CategoriesApi().categoriesCreate({
-    category: {
+  await client.POST("/api/categories/", {
+    body: {
+      id: 0,
       title: title as string,
     },
   });
+
   queryClient.invalidateQueries(categoryOptions);
   return null;
 };
@@ -29,8 +36,8 @@ export const categoryPost = async (formData: FormData) => {
 export const categoryDelete = async (formData: FormData) => {
   const id = formData.get("id");
 
-  await new CategoriesApi().categoriesDestroy({
-    id: +(id as string),
+  await client.DELETE(`/api/categories/{id}/`, {
+    params: { path: { id: +(id as string) } },
   });
   queryClient.invalidateQueries(categoryOptions);
   return null;
