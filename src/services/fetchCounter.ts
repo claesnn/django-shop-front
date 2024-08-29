@@ -6,11 +6,7 @@ async function counterFetch() {
   const { data } = await client.GET("/api/global-counters/{id}/", {
     params: { path: { id: 1 } },
   });
-  if (data) {
-    return data;
-  } else {
-    return null;
-  }
+  return data ?? null;
 }
 
 export const counterOptions = queryOptions({

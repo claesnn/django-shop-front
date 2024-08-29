@@ -4,11 +4,7 @@ import { client } from "../lib/open-api/api-client";
 
 async function categoryFetch() {
   const { data } = await client.GET("/api/categories/", {});
-  if (data) {
-    return data;
-  } else {
-    return [];
-  }
+  return data ?? null;
 }
 
 export const categoryOptions = queryOptions({

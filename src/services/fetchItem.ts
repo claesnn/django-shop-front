@@ -5,11 +5,7 @@ async function itemFetch(id: string) {
   const { data } = await client.GET("/api/items/{id}/", {
     params: { path: { id: +id } },
   });
-  if (data) {
-    return data;
-  } else {
-    return null;
-  }
+  return data ?? null;
 }
 
 export const itemSingleOptions = (id: string) => {

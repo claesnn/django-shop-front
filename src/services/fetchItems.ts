@@ -4,11 +4,7 @@ import { client } from "../lib/open-api/api-client";
 
 async function itemFetch() {
   const { data } = await client.GET("/api/items/", {});
-  if (data) {
-    return data;
-  } else {
-    return [];
-  }
+  return data ?? [];
 }
 
 export const itemOptions = queryOptions({
